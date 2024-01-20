@@ -1,5 +1,10 @@
 JavaScript – 
 JavaScript is a lightweight, cross-platform, object-oriented scripting language used to makes web pages dynamic and interactive. It is one of the three core technologies of web development. It can be used in Client-side and Server-side. 
+•	JavaScript is a single threaded, non-blocking, asynchronous concurrent language.
+•	It has a call stack, an event loop and a callback queue + other Apis.
+•	V8 is the JavaScript runtime which has a call stack and a heap.
+•	The heap is used for memory allocation and the stack holds the execution context.
+•	DOM, setTimeout, XML, HttpRequest don’t exist in V8 source code.
 JavaScript was invented by Brendan Eich in 1995, It was developed for Netscape 2 and became an ECMA standard in 1997.
 ECMA-262 is the official name of the standard. ECMAScript is the official name of the language.
 Scripting language  - A scripting language is a programming language that employs a high-level construct to interpret and execute commands one by one at run time. It don’t need the compilation step
@@ -109,6 +114,7 @@ JavaScript has 8 Datatypes
 6. Null      (typeof – object) 
 7. Symbol (typeof- symbol)
 8. Object (typeof – object)
+10 function(){}  (typeof – function)
 9.  typeof NaN	// Returns "number"
 The Object Datatype
 The object data type can contain:
@@ -903,6 +909,7 @@ function outerFunction(outerVariable) {
 }
 const closure = outerFunction(10);
 closure(5);  // Outputs: 15
+A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function's scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
 JavaScript Classes
 JavaScript classes were introduced in ECMAScript 2015 (ES6) to provide a more structured and familiar way to define object-oriented programming concepts in JavaScript. While JavaScript is a prototype-based language, the introduction of classes brought a syntax similar to class-based languages like Java or C++.
 Class Definition: A class in JavaScript is defined using the class keyword, followed by the class name. Inside the class, you can define constructor methods, instance methods, static methods, getters, setters, etc.
@@ -934,6 +941,15 @@ const myCar = new Car("Ford", 2014);
 document.getElementById("demo").innerHTML=
 "My car is " + myCar.age(year) + " years old.";
 </script>
+event loop
+In JavaScript, the event loop is a fundamental mechanism that enables the asynchronous execution of code. It’s an essential part of the JavaScript runtime environment, allowing the language to handle non-blocking operations efficiently. The event loop is responsible for managing the execution of code, handling events, and maintaining the flow of control.
+1.	Call Stack:
+•	JavaScript uses a call stack to keep track of the currently executing function (where the program is in its execution).
+2.	Callback Queue:
+•	Asynchronous operations, such as I/O operations or timers, are handled by the browser or Node.js runtime. When these operations are complete, corresponding functions (callbacks) are placed in the callback queue.
+3.	Event Loop:
+•	The event loop continuously checks the call stack and the callback queue. If the call stack is empty, it takes the first function from the callback queue and pushes it onto the call stack for execution.
+ 
 Class Inheritance -
 To create a class inheritance, use the extends keyword.
 A class created with a class inheritance inherits all the methods from another class.
@@ -1061,6 +1077,20 @@ getChesse()
 });
 </script>
 
+The Promise class offers four static methods to facilitate async task concurrency.
+
+Promise.all()
+The Promise.all() static method takes an Array of promises as input and returns a single Promise. This returned promise fulfills when all of the input's promises fulfill (including when an empty array is passed), with an array of the fulfillment values. It rejects when any of the input's promises rejects, with this first rejection reason.
+
+Promise.allSettled()
+The Promise.allSettled() static method takes an iterable of promises as input and returns a single Promise. This returned promise fulfills when all of the input's promises settle (including when an empty iterable is passed), with an array of objects that describe the outcome of each promise.
+
+Promise.any()
+The Promise.any() static method takes an iterable of promises as input and returns a single Promise. This returned promise fulfills when any of the input's promises fulfills, with this first fulfillment value. It rejects when all of the input's promises reject (including when an empty iterable is passed), with an AggregateError containing an array of rejection reasons.
+
+Promise.race()
+The Promise.race() static method takes an iterable of promises as input and returns a single Promise. This returned promise settles with the eventual state of the first promise that settles.
+
 Async Await –
 async and await make promises easier to write. using async functions and the await keyword to pause the execution until a promise is resolved or rejected. It has to be noted that it only makes the async function block wait and not the whole program execution.
 
@@ -1152,6 +1182,17 @@ JS executing
 The getElementsByClassName() and getElementsByTagName() methods return a live HTMLCollection.
 The querySelectorAll() method returns a static NodeList.
 The childNodes property returns a live NodeList.
+Prototype –
+Prototypes are the mechanism by which JavaScript objects inherit property and methods from one another.
+Every object in JavaScript has a built-in property, which is called its prototype. The prototype is itself an object, so the prototype will have its own prototype, making what's called a prototype chain. The chain ends when we reach a prototype that has null for its own prototype.
+Prototype Inheritance
+All JavaScript objects inherit properties and methods from a prototype:
+•	Date objects inherit from Date.prototype
+•	Array objects inherit from Array.prototype
+•	Person objects inherit from Person.prototype
+The Object.prototype is on the top of the prototype inheritance chain:
+Date objects, Array objects, and Person objects inherit from Object.prototype.
+
 BOM –
 The Browser Object Model (BOM) allows JavaScript to "talk to" the browser.
 The window object is supported by all browsers. It represents the browser's window.
