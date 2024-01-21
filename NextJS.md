@@ -33,7 +33,7 @@ This leads to
 
 Next.js
 Next JS –
-Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations.
+Next.js is a React framework for building full-stack web applications. you use React Components to build user interfaces, and Next.js for additional features and optimizations.
 Under the hood, Next.js also abstracts and automatically configures tooling needed for React, like bundling, compiling, and more. This allows you to focus on building your application instead of spending time with configuration.
 Whether you're an individual developer or part of a larger team, Next.js can help you build interactive, dynamic, and fast React applications.
 There's no need to install additional packages. Next.js provides everything for you
@@ -50,6 +50,8 @@ Next.js simplifies the process of building a react application of production.
 4.	Support for CSS modules.
 5.	Authentication
 6.	Dev and Prod build system (Built-in Optimization).
+7.	Server-Side rendering.
+8.	Static site generation
 App Router vs Pages Router -
 Next.js has two different routers: the App Router and the Pages Router. The App Router is a newer router that allows you to use React's latest features, such as Server Components and Streaming. The Pages Router is the original Next.js router, which allowed you to build server-rendered React applications and continues to be supported for older Next.js applications.
 Installation-
@@ -245,6 +247,12 @@ function Posts({ posts }) {
 }
 export default Posts
 encodeURIComponent is used in the example to keep the path utf-8 compatible.
+encodeURIComponent is a JavaScript function that is used to encode a URI component. In other words, it takes a string as input and returns a new string in which certain characters that have a special meaning in a URI are replaced with their corresponding percent-encoded values.
+For example, characters such as spaces, ampersands, and question marks are not allowed in certain parts of a URI, and using encodeURIComponent ensures that these characters are properly encoded so that they don't interfere with the structure of the URI.
+var originalString = "Hello, World!";
+var encodedString = encodeURIComponent(originalString);
+console.log(encodedString);
+// Output: Hello%2C%20World%21
 Alternatively, using a URL Object:
 import Link from 'next/link'
 function Posts({ posts }) {
@@ -299,12 +307,15 @@ function Page() {
 }
 export default Page
 404 Page
+404 – NOT found, the browser was able to communicate with a given server, but the server could not find what was requested.
 If you want to customize 404 error page, create 404.tsx/.js file under pages folder.
 Customizing The 500 Page
+500 – Internal Server Error the server encountered an unexpected condition that prevented it from fulfilling the request.
 To customize the 500 page you can create a pages/500.js file. This file is statically generated at build time.
 API routes -
 API routes provide a solution to build a public API with Next.js.
 Any file inside the folder pages/api is mapped to /api/* and will be treated as an API endpoint instead of a page. They are server-side only bundles and won't increase your client-side bundle size.
+API : An application programming interface is a way for two or more computer programs or components to communicate with each other.
 pages/api/hello.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
 type ResponseData = {
@@ -341,6 +352,12 @@ res.redirect([status,] path) - Redirects to a specified path or URL. status must
 res.revalidate(urlPath) - Revalidate a page on demand using getStaticProps. urlPath must be a string.
 Dynamic API Routes
 API Routes support dynamic routes, Catch all API routes, Optional catch all API routes, and follow the same file naming rules used for pages/.
+pages/api/post/[pid].ts
+import type { NextApiRequest, NextApiResponse } from 'next'
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { pid } = req.query
+  res.end(`Post: ${pid}`)
+}
 Routing Summary
 1. Page based routing mechanism - Pages are associated with a route based on their file name 2. Nested routes - Nested folder structure, files will be automatically routed in the same way in the URL
 3. Dynamic routes - Can be created by adding square brackets to a page name
@@ -351,7 +368,35 @@ Routing Summary
 Internationalization -
 Next.js has built-in support for internationalized (i18n) routing since v10.0.0. You can provide a list of locales, the default locale, and domain-specific locales and Next.js will automatically handle the routing.
 Locale Strategies
+next.config.js
+module.exports = {
+  i18n: {
+    locales: ['en-US', 'fr', 'nl-NL'],
+    defaultLocale: 'en-US',
+    domains: [
+      {
+        domain: 'example.com',
+        defaultLocale: 'en-US',
+      },
+      {
+        domain: 'example.nl',
+        defaultLocale: 'nl-NL',
+      },
+      {
+        domain: 'example.fr',
+        defaultLocale: 'fr',
+        // an optional http field can also be used to test,locale domains locally with http instead of https
+        http: true,
+      },
+    ],
+  },
+}
 There are two locale handling strategies: Sub-path Routing and Domain Routing.
+: Sub-path Routing
+pages/blog.js
+Domain Routing
+•	example.fr/blog
+
 Automatic Locale Detection
 When a user visits the application root (generally /), Next.js will try to automatically detect which locale the user prefers based on the Accept-Language header and the current domain.
 If a locale other than the default locale is detected, the user will be redirected to either:
@@ -360,6 +405,53 @@ When using Domain Routing: The domain with that locale specified as the default
 When using Domain Routing, if a user with the Accept-Language header fr;q=0.9 visits example.com, they will be redirected to example.fr since that domain handles the fr locale by default.
 
 When using Sub-path Routing, the user would be redirected to /fr.
+Disabling Automatic Locale Detection
+module.exports = {
+  i18n: {
+    localeDetection: false,
+  },
+}
+Accessing the locale information
+You can access the locale information via the Next.js router. For example, using the useRouter() hook the following properties are available:
+•	locale contains the currently active locale.
+•	locales contains all configured locales.
+•	defaultLocale contains the configured default locale.
+Transition between locales
+You can use next/link or next/router to transition between locales.
+import Link from 'next/link'
+ 
+export default function IndexPage(props) {
+  return (
+    <Link href="/another" locale="fr">
+      To /fr/another
+    </Link>
+  )
+}
+import { useRouter } from 'next/router'
+ 
+export default function IndexPage(props) {
+  const router = useRouter()
+ 
+  return (
+    <div
+      onClick={() => {
+        router.push('/another', '/another', { locale: 'fr' })
+      }}
+    >
+      to /fr/another
+    </div>
+  )
+}
+const { pathname, asPath, query } = router// change just the locale and maintain all other route information including href's queryrouter.push({ pathname, query }, asPath, { locale: nextLocale })
+import Link from 'next/link'
+ 
+export default function IndexPage(props) {
+  return (
+    <Link href="/fr/another" locale={false}>
+      To /fr/another
+    </Link>
+  )
+}
 Limits for the i18n config
 locales: 100 total locales
 domains: 100 total locale domain items
